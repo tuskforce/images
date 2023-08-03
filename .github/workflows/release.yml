@@ -1,0 +1,35 @@
+name: Release workflow for tagged versions
+on:
+  release:
+    types:
+      - created
+
+jobs:
+  push-store-image:
+    permissions:
+      packages: write
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        pgversion: ['11', '12', '13', '14', '15']
+    steps:
+      - name: 'Checkout GitHub Action'
+        uses: actions/checkout@main
+
+      - name: 'Login to GitHub Container Registry'
+        uses: docker/login-action@v2
+        with:
+          registry: ghcr.io
+          username: ${{github.actor}}
+          password: ${{secrets.GITHUB_TOKEN}}
+
+      - name: 'Build Image'
+        run: |
+          cd pgbuilder
+          docker build . --build-arg="PGVERSION=${{ matrix.pgversion }}" --tag ghcr.io/tuskforce/pgbuilder:${{ matrix.pgversion }}
+          docker tag ghcr.io/tuskforce/pgbuilder:${{ matrix.pgversion }} ghcr.io/tuskforce/pgbuilder:${{ matrix.pgversion }}-${{ github.ref_name }}
+      - name: 'Tag latest'
+        run: docker tag ghcr.io/tuskforce/pgbuilder:${{ matrix.pgversion }} ghcr.io/tuskforce/pgbuilder:latest
+        if: ${{ matrix.pgversion == '15' }}
+      - name: 'Push to ghcr.io'
+        run: docker push -a ghcr.io/tuskforce/pgbuilder
