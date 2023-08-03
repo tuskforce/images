@@ -29,7 +29,9 @@ jobs:
           docker build . --build-arg="PGVERSION=${{ matrix.pgversion }}" --tag ghcr.io/tuskforce/pgbuilder:${{ matrix.pgversion }}
           docker tag ghcr.io/tuskforce/pgbuilder:${{ matrix.pgversion }} ghcr.io/tuskforce/pgbuilder:${{ matrix.pgversion }}-${{ github.ref_name }}
       - name: 'Tag latest'
-        run: docker tag ghcr.io/tuskforce/pgbuilder:${{ matrix.pgversion }} ghcr.io/tuskforce/pgbuilder:latest
+        run: |
+          docker tag ghcr.io/tuskforce/pgbuilder:${{ matrix.pgversion }} ghcr.io/tuskforce/pgbuilder:latest
+          docker tag ghcr.io/tuskforce/pgbuilder:${{ matrix.pgversion }} ghcr.io/tuskforce/pgbuilder:${{ github.ref_name }}
         if: ${{ matrix.pgversion == '15' }}
       - name: 'Push to ghcr.io'
         run: docker push -a ghcr.io/tuskforce/pgbuilder
