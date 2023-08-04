@@ -1,9 +1,8 @@
-FROM rockylinux:8
 ARG PGVERSION=11
+FROM ghcr.io/tuskforce/postgres:${PGVERSION}
 WORKDIR /usr/src/app
 
 COPY . .
-RUN dnf install -y make rpmdevtools rpm-build && \
-    make && \
+RUN make && \
     rm *
 

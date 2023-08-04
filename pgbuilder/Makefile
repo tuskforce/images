@@ -15,12 +15,9 @@ flex:
 buildtools: linux-buildtools pg-buildtools
 
 linux-buildtools:
-	dnf install -y --nogpgcheck curl vim make epel-release dos2unix bc coreutils-single grep
+	dnf install -y --nogpgcheck curl vim epel-release dos2unix bc rpmdevtools rpm-build
 	dnf --enablerepo=powertools install -y perl-IPC-Run hdf5-devel
 	dnf groupinstall -y "Development Tools"
 
 pg-buildtools:
-	dnf install -y https://download.postgresql.org/pub/repos/yum/reporpms/EL-8-x86_64/pgdg-redhat-repo-latest.noarch.rpm
-	uname -m | grep -q aarch64 && curl https://download.postgresql.org/pub/repos/yum/RPM-GPG-KEY-PGDG-AARCH64-RHEL8 -o /etc/pki/rpm-gpg/RPM-GPG-KEY-PGDG || uname -m
-	dnf -qy module disable postgresql
-	dnf install -y postgresql$(PGVERSION)-server postgresql$(PGVERSION)-devel postgresql$(PGVERSION)-libs libpq5-devel
+	dnf install -y postgresql$(PGVERSION)-devel postgresql$(PGVERSION)-libs libpq5-devel
