@@ -8,3 +8,4 @@ postgres:
 	uname -m | grep -q aarch64 && curl https://download.postgresql.org/pub/repos/yum/RPM-GPG-KEY-PGDG-AARCH64-RHEL8 -o /etc/pki/rpm-gpg/RPM-GPG-KEY-PGDG || uname -m
 	dnf -qy module disable postgresql
 	dnf install -y postgresql$(PGVERSION)-server
+	dnf -y install --enablerepo=powertools hdf5
