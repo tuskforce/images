@@ -20,4 +20,5 @@ linux-buildtools:
 	dnf groupinstall -y "Development Tools"
 
 pg-buildtools:
-	dnf install -y postgresql-private-devel postgresql-server-devel postgresql-upgrade-devel libpq-devel
+	dnf install -y postgresql-server-devel postgresql-upgrade-devel
+	test ${PGVERSION} -lt 15 && dnf install -y libpq-devel || dnf install -y postgresql-private-devel
