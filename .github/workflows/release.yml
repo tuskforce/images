@@ -12,6 +12,7 @@ jobs:
     strategy:
       matrix:
         pgversion: ['11', '12', '13', '14', '15']
+        pgdistribution: ['rhpg', 'pg']
     steps:
       - name: 'Checkout GitHub Action'
         uses: actions/checkout@main
@@ -25,26 +26,32 @@ jobs:
 
       - name: 'Build postgres image'
         run: |
-          cd postgres
-          docker build . --build-arg="PGVERSION=${{ matrix.pgversion }}" --tag ghcr.io/tuskforce/postgres:${{ matrix.pgversion }}
-          docker tag ghcr.io/tuskforce/postgres:${{ matrix.pgversion }} ghcr.io/tuskforce/postgres:${{ matrix.pgversion }}-${{ github.ref_name }}
+          cd ${{ matrix.pgdistribution}}
+          docker build . --build-arg="PGVERSION=${{ matrix.pgversion }}" --tag postgres
+          docker tag postgres ghcr.io/tuskforce/${{ matrix.pgdistribution }}:${{ matrix.pgversion }}
+          docker tag postgres ghcr.io/tuskforce/${{ matrix.pgdistribution }}:${{ matrix.pgversion }}-${{ github.ref_name }}
+
       - name: 'Tag latest'
         run: |
-          docker tag ghcr.io/tuskforce/postgres:${{ matrix.pgversion }} ghcr.io/tuskforce/postgres:latest
-          docker tag ghcr.io/tuskforce/postgres:${{ matrix.pgversion }} ghcr.io/tuskforce/postgres:${{ github.ref_name }}
+          docker tag postgres ghcr.io/tuskforce/${{ matrix.pgdistribution }}:latest
+          docker tag postgres ghcr.io/tuskforce/postgres:${{ github.ref_name }}
         if: ${{ matrix.pgversion == '15' }}
+
       - name: 'Push to ghcr.io'
-        run: docker push -a ghcr.io/tuskforce/postgres
+        run: docker push -a ghcr.io/tuskforce/${{ matrix.pgdistribution }}
 
       - name: 'Build pgbuilder image'
         run: |
-          cd pgbuilder
-          docker build . --build-arg="PGVERSION=${{ matrix.pgversion }}" --tag ghcr.io/tuskforce/pgbuilder:${{ matrix.pgversion }}
-          docker tag ghcr.io/tuskforce/pgbuilder:${{ matrix.pgversion }} ghcr.io/tuskforce/pgbuilder:${{ matrix.pgversion }}-${{ github.ref_name }}
+          cd ${{ matrix.pgdistribution}}builder
+          docker build . --build-arg="PGVERSION=${{ matrix.pgversion }}" --tag builder
+          docker tag builder ghcr.io/tuskforce/${{ matrix.pgdistribution}}builder:${{ matrix.pgversion }}
+          docker tag builder ghcr.io/tuskforce/${{ matrix.pgdistribution}}builder:${{ matrix.pgversion }}-${{ github.ref_name }}
+
       - name: 'Tag latest'
         run: |
-          docker tag ghcr.io/tuskforce/pgbuilder:${{ matrix.pgversion }} ghcr.io/tuskforce/pgbuilder:latest
-          docker tag ghcr.io/tuskforce/pgbuilder:${{ matrix.pgversion }} ghcr.io/tuskforce/pgbuilder:${{ github.ref_name }}
+          docker tag builder ghcr.io/tuskforce/${{ matrix.pgdistribution}}builder:latest
+          docker tag builder ghcr.io/tuskforce/${{ matrix.pgdistribution}}builder:${{ github.ref_name }}
         if: ${{ matrix.pgversion == '15' }}
+
       - name: 'Push to ghcr.io'
-        run: docker push -a ghcr.io/tuskforce/pgbuilder
+        run: docker push -a ghcr.io/tuskforce/${{ matrix.pgdistribution}}builder
