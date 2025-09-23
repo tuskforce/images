@@ -12,15 +12,15 @@ jobs:
     strategy:
       matrix:
         pgversion: [ '15','16','17']
-        #pgdistribution: ['pg']
-        pgdistribution: ['rhpg', 'pg']
+        pgdistribution: ['pg']
+        #pgdistribution: ['rhpg', 'pg']
         exclude:
           - pgversion: '11'
             pgdistribution: 'rhpg'
           - pgversion: '14'
             pgdistribution: 'rhpg'
-          - pgversion: '17'
-            pgdistribution: 'rhpg'
+         # - pgversion: '17'
+         #   pgdistribution: 'rhpg'
     steps:
       - name: 'Checkout GitHub Action'
         uses: actions/checkout@main
@@ -43,7 +43,7 @@ jobs:
         run: |
           docker tag postgres ghcr.io/tuskforce/${{ matrix.pgdistribution }}:latest
           docker tag postgres ghcr.io/tuskforce/postgres:${{ github.ref_name }}
-        if: ${{ matrix.pgversion == '15' }}
+        if: ${{ matrix.pgversion == '17' }}
 
       - name: 'Push to ghcr.io'
         run: docker push -a ghcr.io/tuskforce/${{ matrix.pgdistribution }}
@@ -59,7 +59,7 @@ jobs:
         run: |
           docker tag builder ghcr.io/tuskforce/${{ matrix.pgdistribution}}builder:latest
           docker tag builder ghcr.io/tuskforce/${{ matrix.pgdistribution}}builder:${{ github.ref_name }}
-        if: ${{ matrix.pgversion == '15' }}
+        if: ${{ matrix.pgversion == '17' }}
 
       - name: 'Push to ghcr.io'
         run: docker push -a ghcr.io/tuskforce/${{ matrix.pgdistribution}}builder
