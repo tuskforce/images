@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        pgversion: ['11', '12', '13', '14', '15']
+        pgversion: [ '15','16','17']
         pgdistribution: ['rhpg', 'pg']
         exclude:
           - pgversion: '11'
