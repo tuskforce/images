@@ -12,11 +12,14 @@ jobs:
     strategy:
       matrix:
         pgversion: [ '15','16','17']
+        #pgdistribution: ['pg']
         pgdistribution: ['rhpg', 'pg']
         exclude:
           - pgversion: '11'
             pgdistribution: 'rhpg'
           - pgversion: '14'
+            pgdistribution: 'rhpg'
+          - pgversion: '17'
             pgdistribution: 'rhpg'
     steps:
       - name: 'Checkout GitHub Action'
