@@ -1,5 +1,5 @@
 ARG PGVERSION=11
-FROM ghcr.io/tuskforce/postgres:${PGVERSION}
+FROM ghcr.io/tuskforce/pg:${PGVERSION}
 ARG PGVERSION=11
 WORKDIR /usr/src/app
 
